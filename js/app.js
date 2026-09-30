@@ -94,6 +94,8 @@
     if (all) list = interleave(list);
     grid.classList.toggle('is-all', all);
     grid.innerHTML = list.map(function (p, i) { return cardHTML(p, { d: Math.min(i, 14), feat: all && p.featured, eager: false }); }).join('');
+    grid.classList.remove('swap'); void grid.offsetWidth; grid.classList.add('swap');
+    refreshCards();
     emptyEl.hidden = list.length > 0;
     var label = state.cat === 'All' ? 'the collection' : state.cat.toLowerCase();
     countEl.textContent = list.length ? 'Showing ' + list.length + (list.length === 1 ? ' piece' : ' pieces') + ' from ' + label + (state.q ? ' for “' + state.q + '”' : '') : '';
@@ -352,7 +354,9 @@
       return ['You can place your order by messaging us on Instagram. Tell us the name of the piece you like and we’ll take it from there.', [IGA('ORDER ON INSTAGRAM')]];
     if (/(availab|in stock|stock|restock|sold out|have it)/.test(q) && !/do you have/.test(q))
       return ['I can’t confirm live availability here. Please message us on Instagram for current availability.', [IGA('CONTACT US ON INSTAGRAM')]];
-    if (/(ship|deliver|courier|dispatch|return|refund|exchange|warrant|payment|\bpay\b|\bcod\b|cash|size|sizing|measure|dimension|material|leather|authentic|original|genuine|certificate|custom|bulk|wholesale|location|address|where are you|opening|hours|delivery time)/.test(q))
+    if (/(where are you|where.*(located|based)|location|address|\bmap\b|dubai|\buae\b|emirates|visit|showroom|shop|store)/.test(q))
+      return ['We’re in Dubai, United Arab Emirates. I don’t have a street address here, so for visit details please contact us on Instagram ' + HANDLE + '.', [{ t: 'jump', sel: '#location', label: 'VIEW THE MAP' }, IGA('CONTACT US ON INSTAGRAM')]];
+    if (/(ship|deliver|courier|dispatch|return|refund|exchange|warrant|payment|\bpay\b|\bcod\b|cash|size|sizing|measure|dimension|material|leather|authentic|original|genuine|certificate|custom|bulk|wholesale|opening|hours|delivery time)/.test(q))
       return ['I don’t have that information here. ' + HUMAN_MSG, [IGA('CONTACT US ON INSTAGRAM')]];
     if (/(new arrival|new in|latest|just in|newest)/.test(q)) {
       return [arrivals.length ? 'You can see our newest pieces in the New Arrivals section. For current availability, message us on Instagram.' : 'For the newest pieces, please check our Instagram ' + HANDLE + '.', (arrivals.length ? [{ t: 'jump', sel: '#new-arrivals', label: 'VIEW NEW ARRIVALS' }] : []).concat([IGA('CONTACT INSTAGRAM')])];
@@ -391,19 +395,46 @@
     document.head.appendChild(s);
   })();
 
-  /* ---------------------------------------------------------------- scroll engine */
+  /* ---------------------------------------------------------------- scroll engine
+     One rAF loop drives everything from the scroll position (and, on desktop, the cursor):
+     hero stages, pinned editorial sections, scrubbed reveals, parallax layers and the Dubai map.
+     Only transform / opacity / a few CSS variables are written. */
   var nav = $('#nav'), progress = $('#progress');
   var track = $('[data-track]'), media = $('[data-hero-media]'), mInner = $('.hm-inner', media), tint = $('.hm-tint', media);
-  var copy = $('[data-hero-copy]'), wash = $('.wash'), washDeep = $('.wash-deep'), silk1 = $('.silk-1'), silk2 = $('.silk-2'), silk3 = $('.silk-3');
-  var lines = $$('.sl'), hint = $('[data-hint]'), scrubs = $$('[data-scrub]');
-  var vw, vh, trackTop, trackLen, mobile, target = 0, smooth = 0, raf = 0, dirty = true;
+  var copy = $('[data-hero-copy]'), hTitle = $('.hero-title'), hTag = $('.hero-tag'), hCta = $('.hero-cta');
+  var wash = $('.wash'), washDeep = $('.wash-deep'), silk1 = $('.silk-1'), silk2 = $('.silk-2'), silk3 = $('.silk-3');
+  var lines = $$('.sl'), hint = $('[data-hint]');
+  var mapStage = $('[data-map-stage]'), mapCard = $('[data-map-card]');
+  var vw, vh, trackTop, trackLen, mobile, lite, target = 0, smooth = 0, raf = 0, cols = 4;
+  var hasMouse = window.matchMedia('(hover:hover) and (pointer:fine)').matches && !reduced;
+  var mxT = 0, myT = 0, mx = 0, my = 0, tiltTx = 0, tiltTy = 0, tiltX = 0, tiltY = 0;
+  var RISE = [], PLX = [], LINES = [], IMGS = [], PINS = [], MVARS = [], SCRUBS = [], CARDS = [];
 
-  function measure() {
-    vw = window.innerWidth; vh = window.innerHeight; mobile = vw < 760;
-    trackTop = track.offsetTop; trackLen = Math.max(1, track.offsetHeight - vh); dirty = true;
+  function docTop(el) { var t = 0; while (el) { t += el.offsetTop; el = el.offsetParent; } return t; }
+  function ease3(t) { return 1 - Math.pow(1 - t, 3); }
+  function num(el, a, d) { var v = parseFloat(el.getAttribute(a)); return isNaN(v) ? d : v; }
+
+  function collect() {
+    RISE = $$('[data-rise]').map(function (el) { return { el: el, st: num(el, 'data-st', 0) }; });
+    PLX = $$('[data-parallax]').map(function (el) { return { el: el, k: num(el, 'data-parallax', 0), m: num(el, 'data-mouse', 0) }; });
+    LINES = $$('.reveal-lines').map(function (el) { return { el: el, sp: $$('.line>span', el) }; });
+    IMGS = $$('.reveal-img').map(function (el) { return { el: el, img: el.querySelector('img'), m: num(el, 'data-mouse', 0) }; });
+    PINS = $$('[data-pin]'); MVARS = $$('[data-mouse-var]'); SCRUBS = $$('[data-scrub]');
+    refreshCards();
   }
+  function refreshCards() {
+    CARDS = $$('#grid .card');
+    var g = $('#grid'); if (g) { var n = getComputedStyle(g).gridTemplateColumns.split(' ').length; cols = n > 0 ? n : 4; }
+    schedule();
+  }
+  function measure() {
+    vw = window.innerWidth; vh = window.innerHeight; mobile = vw < 760; lite = vw < 760;
+    trackTop = track.offsetTop; trackLen = Math.max(1, track.offsetHeight - vh);
+    var g = $('#grid'); if (g) { var n = getComputedStyle(g).gridTemplateColumns.split(' ').length; cols = n > 0 ? n : 4; }
+  }
+
   function renderHero(p) {
-    var a = easeIO(clamp(p / .42)), b = clamp((p - .36) / .3), c = clamp((p - .6) / .3);
+    var a = easeIO(clamp(p / .42)), b = clamp((p - .36) / .3), c = clamp((p - .6) / .3), ex = clamp((p - .8) / .2);
     var sL, sT, sW, sH;
     if (mobile) { sL = vw * .15; sT = vh * .44; sW = vw * .7; sH = vh * .47; }
     else { sL = vw * .56; sT = vh * .12; sW = vw * .385; sH = vh * .78; }
@@ -411,56 +442,187 @@
     media.style.left = L + 'px'; media.style.top = T + 'px'; media.style.width = W + 'px'; media.style.height = H + 'px';
     media.style.borderRadius = r + 'px ' + r + 'px 0 0';
     media.style.opacity = 1 - clamp((p - .52) / .22);
-    mInner.style.transform = 'scale(' + lerp(1.12, 1, a) + ')';
-    mInner.style.filter = b > .01 ? 'blur(' + (b * 12).toFixed(1) + 'px)' : 'none';
+    // slow continuous zoom on the hero visual, plus a hint of cursor parallax
+    mInner.style.transform = 'translate3d(' + (mx * -16).toFixed(1) + 'px,' + (my * -12).toFixed(1) + 'px,0) scale(' + lerp(1.04, 1.28, clamp(p / .62)).toFixed(4) + ')';
+    mInner.style.filter = b > .01 && !lite ? 'blur(' + (b * 12).toFixed(1) + 'px)' : 'none';
     tint.style.opacity = b * .95;
-    copy.style.opacity = clamp(1 - a * 1.7);
-    copy.style.transform = mobile ? 'translateY(' + (-a * 70) + 'px)' : 'translateY(calc(-46% - ' + (a * 60) + 'px))';
-    copy.style.visibility = a > .62 ? 'hidden' : 'visible';
+    // brand title lifts first, tagline fades next, CTAs go last
+    hTitle.style.opacity = (1 - clamp(a * 1.45 - .1)).toFixed(3);
+    hTitle.style.transform = 'translate3d(0,' + (-a * 170).toFixed(1) + 'px,0)';
+    hTag.style.opacity = (1 - clamp(a * 2.3)).toFixed(3);
+    hTag.style.transform = 'translate3d(0,' + (-a * 120).toFixed(1) + 'px,0)';
+    hCta.style.opacity = (1 - clamp(a * 1.9 - .15)).toFixed(3);
+    hCta.style.transform = 'translate3d(0,' + (-a * 70).toFixed(1) + 'px,0) scale(' + (1 - a * .06).toFixed(3) + ')';
+    copy.style.visibility = a > .72 ? 'hidden' : 'visible';
     wash.style.opacity = clamp((p - .3) / .3);
     washDeep.style.opacity = c;
-    silk1.style.transform = 'translate3d(' + (-p * vw * .12) + 'px,' + (-p * vh * .08) + 'px,0) scale(' + (1 + p * .55) + ')';
-    silk2.style.transform = 'translate3d(' + (-p * vw * .2) + 'px,' + (p * vh * .14) + 'px,0) rotate(' + (-p * 6) + 'deg) scale(' + (1 + p * .7) + ')';
-    silk3.style.transform = 'translate3d(' + (p * vw * .08) + 'px,0,0) scale(' + (1 + p * .3) + ')';
-    silk3.style.opacity = 1 - c * .35;
+    silk1.style.transform = 'translate3d(' + (-p * vw * .12 + mx * vw * .014).toFixed(1) + 'px,' + (-p * vh * .08 + my * vh * .014).toFixed(1) + 'px,0) scale(' + (1 + p * .55) + ')';
+    silk2.style.transform = 'translate3d(' + (-p * vw * .2 + mx * vw * .026).toFixed(1) + 'px,' + (p * vh * .14 + my * vh * .02).toFixed(1) + 'px,0) rotate(' + (-p * 6) + 'deg) scale(' + (1 + p * .7) + ')';
+    silk3.style.transform = 'translate3d(' + (p * vw * .08 + mx * vw * .01).toFixed(1) + 'px,' + (my * vh * .008).toFixed(1) + 'px,0) scale(' + (1 + p * .3) + ')';
+    silk3.style.opacity = 1 - c * .82;
     lines.forEach(function (l, i) {
       var t = easeIO(clamp((p - .6 - i * .06) / .15));
-      l.style.opacity = t; l.style.filter = t < .99 ? 'blur(' + ((1 - t) * 14).toFixed(1) + 'px)' : 'none'; l.style.transform = 'translate3d(0,' + ((1 - t) * 46) + 'px,0)';
+      l.style.opacity = t; l.style.filter = t < .99 && !lite ? 'blur(' + ((1 - t) * 14).toFixed(1) + 'px)' : 'none';
+      l.style.transform = 'translate3d(0,' + ((1 - t) * 46 - ex * 50).toFixed(1) + 'px,0)';
     });
     hint.style.opacity = 1 - clamp(p / .06);
   }
+
+  /* scrubbed reveals: every value is computed from the element's position in the viewport, so it reverses when scrolling up */
+  function fx(y) {
+    var dist = lite ? 34 : 60, k = lite ? .5 : 1, i, n, o, el, top, h, raw, t;
+    // 1) rise (opacity + translateY + scale)
+    for (i = 0; i < RISE.length; i++) {
+      o = RISE[i]; el = o.el; top = docTop(el) - y; h = el.offsetHeight;
+      if (top > vh * 1.3 || top + h < -vh * .3) continue;
+      raw = clamp((vh * .98 - top) / (vh * .38));
+      t = ease3(clamp((raw - o.st * .07) / (1 - o.st * .07)));
+      el.style.opacity = t < .999 ? t.toFixed(3) : '1';
+      el.style.transform = t > .999 ? 'none' : 'translate3d(0,' + ((1 - t) * dist).toFixed(1) + 'px,0)' + (lite ? '' : ' scale(' + (.96 + .04 * t).toFixed(3) + ')');
+    }
+    // 2) headings: line mask reveal with blur-to-sharp
+    for (i = 0; i < LINES.length; i++) {
+      o = LINES[i]; el = o.el; top = docTop(el) - y; h = el.offsetHeight;
+      if (top > vh * 1.3 || top + h < -vh * .3) continue;
+      raw = clamp((vh * .98 - top) / (vh * .42)); n = o.sp.length;
+      o.sp.forEach(function (s, j) {
+        var d = .2 * j, tl = ease3(clamp((raw - d) / (1 - d * (n > 1 ? 1 : 0))));
+        s.style.transform = tl > .999 ? 'none' : 'translate3d(0,' + ((1 - tl) * 112).toFixed(1) + '%,0)';
+        s.style.filter = tl > .99 || lite ? 'none' : 'blur(' + ((1 - tl) * 7).toFixed(1) + 'px)';
+      });
+    }
+    // 3) image reveals (mask + slow zoom + parallax inside the frame)
+    for (i = 0; i < IMGS.length; i++) {
+      o = IMGS[i]; el = o.el; top = docTop(el) - y; h = el.offsetHeight;
+      if (top > vh * 1.3 || top + h < -vh * .3) continue;
+      t = ease3(clamp((vh * .95 - top) / (vh * .6)));
+      var py = ((top + h / 2) - vh / 2) * -.05 * k;
+      o.img.style.clipPath = t > .999 ? 'none' : 'inset(' + ((1 - t) * 100).toFixed(1) + '% 0 0 0)';
+      o.img.style.transform = 'translate3d(' + (mx * o.m).toFixed(1) + 'px,' + (py + my * o.m).toFixed(1) + 'px,0) scale(' + (1.3 - .18 * t).toFixed(3) + ')';
+    }
+    // 4) parallax layers (negative speed = moves a little faster than the page)
+    for (i = 0; i < PLX.length; i++) {
+      o = PLX[i]; el = o.el; top = docTop(el) - y; h = el.offsetHeight;
+      if (top > vh * 1.4 || top + h < -vh * .4) continue;
+      el.style.transform = 'translate3d(' + (mx * o.m * .3).toFixed(1) + 'px,' + (((top + h / 2) - vh / 2) * o.k * k).toFixed(1) + 'px,0)';
+    }
+    // 5) product cards: staggered rise, depth-dependent drift, zoom-in
+    var depth = [0, .05, .025, .07];
+    for (i = 0; i < CARDS.length; i++) {
+      el = CARDS[i]; top = docTop(el) - y; h = el.offsetHeight;
+      if (top > vh * 1.3 || top + h < -vh * .4) continue;
+      var col = i % cols;
+      raw = clamp((vh * .99 - top) / (vh * .42));
+      t = ease3(clamp((raw - col * .07) / (1 - col * .07)));
+      var dy = (1 - t) * (lite ? 40 : 76) + ((top + h / 2) - vh / 2) * depth[col % 4] * k;
+      el.style.opacity = t < .999 ? t.toFixed(3) : '1';
+      el.style.transform = 'translate3d(0,' + dy.toFixed(1) + 'px,0)';
+      el.firstChild && el.firstChild.firstChild && el.firstChild.firstChild.style.setProperty('--z', (1.14 - .14 * t).toFixed(3));
+    }
+    // 6) cursor-following decorative layers
+    if (hasMouse) for (i = 0; i < MVARS.length; i++) {
+      var kk = num(MVARS[i], 'data-mouse-var', 10);
+      MVARS[i].style.setProperty('--mx', (mx * kk * 2).toFixed(1) + 'px'); MVARS[i].style.setProperty('--my', (my * kk * 2).toFixed(1) + 'px');
+    }
+  }
+
+  /* Dubai map: position in the viewport controls rise, tilt, rotation and scale. It settles at rotation 0. */
+  function renderMap() {
+    var r = mapStage.getBoundingClientRect();
+    if (r.top > vh * 1.3 || r.bottom < -vh * .3) return false;
+    var p = clamp((vh - r.top) / (vh / 2 + r.height / 2));
+    var s = clamp((p - .04) / .96), e = s * s * (3 - 2 * s);          // smoothstep
+    var settled = e > .9995, again = false;
+    if (settled) {
+      if (hasMouse && (Math.abs(tiltTx - tiltX) + Math.abs(tiltTy - tiltY) > .0008 || Math.abs(tiltX) + Math.abs(tiltY) > .002)) {
+        tiltX += (tiltTx - tiltX) * .1; tiltY += (tiltTy - tiltY) * .1; again = true;
+        mapCard.style.transform = 'perspective(1400px) rotateX(' + (-tiltY * 5).toFixed(2) + 'deg) rotateY(' + (tiltX * 6).toFixed(2) + 'deg)';
+      } else mapCard.style.transform = 'none';
+      mapCard.style.opacity = '1';
+    } else {
+      var d = 1 - e;
+      var ty = d * vh * (lite ? .22 : .42), rz = d * (lite ? -4 : -11), rx = d * (lite ? 10 : 26), ry = d * (lite ? 0 : -17), sc = (lite ? .92 : .82) + (lite ? .08 : .18) * e;
+      mapCard.style.transform = 'perspective(1400px) translate3d(0,' + ty.toFixed(1) + 'px,0) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) rotateZ(' + rz.toFixed(2) + 'deg) scale(' + sc.toFixed(4) + ')';
+      mapCard.style.opacity = clamp(p * 2.6).toFixed(3);
+    }
+    return again;
+  }
+
   function frame() {
     raf = 0;
-    var y = window.scrollY;
+    var y = window.scrollY, again = false;
     nav.classList.toggle('scrolled', y > 40);
     var doc = document.documentElement.scrollHeight - vh;
     progress.style.transform = 'scaleX(' + (doc > 0 ? y / doc : 0) + ')';
     if (!reduced) {
       target = clamp((y - trackTop) / trackLen);
       smooth += (target - smooth) * .14;
-      if (Math.abs(target - smooth) < .0006) smooth = target;
+      if (Math.abs(target - smooth) < .0006) smooth = target; else again = true;
+      if (hasMouse) {
+        mx += (mxT - mx) * .07; my += (myT - my) * .07;
+        if (Math.abs(mxT - mx) + Math.abs(myT - my) > .0008) again = true; else { mx = mxT; my = myT; }
+      }
       if (y < trackTop + trackLen + vh) renderHero(smooth);
-      scrubs.forEach(function (el) {
+      SCRUBS.forEach(function (el) {
         var r = el.getBoundingClientRect();
-        if (r.bottom < -50 || r.top > vh + 50) return;
+        if (r.bottom < -80 || r.top > vh + 80) return;
         el.style.setProperty('--sp', clamp((vh - r.top) / (vh + r.height)).toFixed(4));
       });
-      if (smooth !== target) schedule();
+      PINS.forEach(function (el) {
+        var r = el.getBoundingClientRect();
+        if (r.bottom < -80 || r.top > vh + 80) return;
+        el.style.setProperty('--pp', clamp(-r.top / Math.max(1, r.height - vh)).toFixed(4));
+      });
+      fx(y);
+      if (mapStage && renderMap()) again = true;
+      if (again) schedule();
     }
-    dirty = false;
   }
   function schedule() { if (!raf) raf = requestAnimationFrame(frame); }
   window.addEventListener('scroll', schedule, { passive: true });
-  window.addEventListener('resize', function () { measure(); schedule(); });
+  window.addEventListener('resize', function () { measure(); refreshCards(); schedule(); });
   window.addEventListener('load', function () { measure(); schedule(); });
-  measure(); if (!reduced) { smooth = target = clamp((window.scrollY - trackTop) / trackLen); } schedule();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); schedule(); });
+  measure(); collect(); if (!reduced) { smooth = target = clamp((window.scrollY - trackTop) / trackLen); } schedule();
   if (reduced) { media.style.cssText = ''; }
 
-  /* reveal-on-view */
-  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
-    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: .18, rootMargin: '0px 0px -6% 0px' }) : null;
-  $$('.reveal-lines,.reveal-fade,.reveal-img').forEach(function (el) { if (io) io.observe(el); else el.classList.add('in'); });
+  /* cursor: layers follow, cards tilt in 3D, buttons pull gently toward the pointer */
+  if (hasMouse) {
+    document.addEventListener('mousemove', function (e) { mxT = e.clientX / vw - .5; myT = e.clientY / vh - .5; schedule(); }, { passive: true });
+    var tiltEl = null;
+    var resetTilt = function (m) { if (m) { m.style.setProperty('--rx', '0deg'); m.style.setProperty('--ry', '0deg'); } };
+    document.addEventListener('mousemove', function (e) {
+      var m = e.target.closest && e.target.closest('.card-media');
+      if (tiltEl && tiltEl !== m) resetTilt(tiltEl);
+      tiltEl = m;
+      if (m) { var r = m.getBoundingClientRect(); m.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 9).toFixed(2) + 'deg'); m.style.setProperty('--rx', ((.5 - (e.clientY - r.top) / r.height) * 7).toFixed(2) + 'deg'); }
+    }, { passive: true });
+    document.addEventListener('mouseleave', function () { resetTilt(tiltEl); tiltEl = null; });
+    var magBtn = null;
+    document.addEventListener('mousemove', function (e) {
+      var b = e.target.closest && e.target.closest('.btn');
+      if (magBtn && magBtn !== b) { magBtn.style.removeProperty('--mx'); magBtn.style.removeProperty('--my'); }
+      magBtn = b;
+      if (b) { var r = b.getBoundingClientRect(); b.style.setProperty('--mx', clamp(((e.clientX - r.left) / r.width - .5) * 14, -8, 8).toFixed(1) + 'px'); b.style.setProperty('--my', clamp(((e.clientY - r.top) / r.height - .5) * 10, -6, 6).toFixed(1) + 'px'); }
+    }, { passive: true });
+    if (mapCard) {
+      mapCard.addEventListener('mousemove', function (e) { var r = mapCard.getBoundingClientRect(); tiltTx = (e.clientX - r.left) / r.width - .5; tiltTy = (e.clientY - r.top) / r.height - .5; schedule(); });
+      mapCard.addEventListener('mouseleave', function () { tiltTx = tiltTy = 0; schedule(); });
+    }
+  }
+
+  /* map: the page keeps scrolling until the visitor chooses to use the map */
+  if (mapCard) {
+    var shield = $('.map-shield', mapCard), done = $('.map-done', mapCard);
+    var setActive = function (on) { mapCard.classList.toggle('active', on); done.hidden = !on; };
+    shield.addEventListener('click', function () { setActive(true); });
+    done.addEventListener('click', function () { setActive(false); });
+    mapCard.addEventListener('mouseleave', function () { if (window.matchMedia('(hover:hover)').matches) setActive(false); });
+    document.addEventListener('pointerdown', function (e) { if (mapCard.classList.contains('active') && !e.target.closest('[data-map-card]')) setActive(false); });
+    if (reduced && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es, ob) { es.forEach(function (x) { if (x.isIntersecting) { mapCard.classList.add('in'); ob.disconnect(); } }); }, { threshold: .25 }).observe(mapStage);
+    } else if (reduced) mapCard.classList.add('in');
+  }
 
   /* active nav link */
   var links = $$('.nav-links a');
@@ -506,7 +668,7 @@
         if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
         var tw = .55 + .45 * Math.sin(t / 900 * p.sp + p.ph);
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283);
-        ctx.fillStyle = p.glint ? 'rgba(255,250,240,' + (.55 * tw) + ')' : 'rgba(110,11,28,' + (.2 * tw) + ')';
+        ctx.fillStyle = p.glint ? 'rgba(255,250,240,' + (.55 * tw) + ')' : 'rgba(110,10,18,' + (.2 * tw) + ')';
         ctx.fill();
       });
       requestAnimationFrame(draw);

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ELORA ELEGANCE COLLECTIVE | Luxury Fashion &amp; Accessories</title>
 <meta name="description" content="ELORA ELEGANCE COLLECTIVE — curated luxury fashion and accessories: bags, jewelry, watches, wallets, belts, shoes and sandals. Order on Instagram @eloraluxecollection.">
-<meta name="theme-color" content="#5C0A1F">
+<meta name="theme-color" content="#6E0A12">
 <!-- TODO: replace https://YOUR-DOMAIN.com/ with your real domain (canonical, og:url, og:image, sitemap.xml, robots.txt) -->
 <link rel="canonical" href="https://YOUR-DOMAIN.com/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -37,6 +37,7 @@
   "url": "https://YOUR-DOMAIN.com/",
   "logo": "https://YOUR-DOMAIN.com/favicon.svg",
   "description": "Curated luxury fashion and accessories. Orders and enquiries via Instagram.",
+  "address": {"@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE"},
   "sameAs": ["https://www.instagram.com/eloraluxecollection/"]
 }
 </script>
@@ -101,25 +102,29 @@
   <div class="stage">
     <div class="wash" aria-hidden="true"><i class="wash-deep"></i></div>
 
-    <svg class="silk silk-1" viewBox="0 0 1440 900" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+    <!-- Flowing silk layers (inspired by the white + burgundy reference) -->
+    <svg class="silk silk-3" viewBox="0 0 1440 900" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
       <defs>
-        <linearGradient id="gBurg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B1230"/><stop offset=".55" stop-color="#5C0A1F"/><stop offset="1" stop-color="#3B0613"/></linearGradient>
-        <linearGradient id="gRed" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A3162F"/><stop offset="1" stop-color="#6E0B1C"/></linearGradient>
-        <linearGradient id="gSheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <linearGradient id="gA" x1="0" y1="0" x2=".55" y2="1"><stop offset="0" stop-color="#8C1016"/><stop offset=".45" stop-color="#5A080D"/><stop offset="1" stop-color="#230004"/></linearGradient>
+        <linearGradient id="gB" x1="0" y1="0" x2=".5" y2="1"><stop offset="0" stop-color="#7A0C12"/><stop offset=".5" stop-color="#45060A"/><stop offset="1" stop-color="#1C0204"/></linearGradient>
+        <linearGradient id="gC" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#6A0A10"/><stop offset=".55" stop-color="#380508"/><stop offset="1" stop-color="#150102"/></linearGradient>
+        <radialGradient id="gHi" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#B8161F" stop-opacity=".6"/><stop offset="1" stop-color="#B8161F" stop-opacity="0"/></radialGradient>
+        <linearGradient id="gG1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DEDEE2"/></linearGradient>
+        <linearGradient id="gG2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E9E9EC"/></linearGradient>
+        <linearGradient id="gSheen" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
       </defs>
-      <g class="float f1" transform="translate(70 0)"><path d="M1440 0V900H960C1110 770 890 650 1005 480C1112 322 890 226 1000 0Z" fill="url(#gBurg)"/></g>
+      <g class="float f3"><path d="M560 900C660 780 510 640 610 480C700 340 550 200 640 0H770C680 200 830 340 740 480C640 640 790 780 690 900Z" fill="url(#gG2)" opacity=".8"/></g>
+      <g class="float f2"><path d="M690 900C790 780 640 640 740 480C830 340 680 200 770 0H880C790 200 940 340 850 480C750 640 900 780 800 900Z" fill="url(#gG2)"/></g>
+      <g class="float f1"><path d="M800 900C900 780 750 640 850 480C940 340 790 200 880 0H990C900 200 1050 340 960 480C860 640 1010 780 900 900Z" fill="url(#gG1)"/></g>
+      <rect class="sweep" x="-400" y="0" width="360" height="900" fill="url(#gSheen)" opacity=".5" transform="skewX(-18)"/>
+    </svg>
+    <svg class="silk silk-1" viewBox="0 0 1440 900" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+      <g class="float f1"><path d="M1440 0V900H900C1010 780 860 640 960 480C1050 340 900 200 990 0Z" fill="url(#gA)"/></g>
+      <g class="float f2"><path d="M1440 0V900H1010C1120 800 990 660 1070 520C1150 380 1030 230 1110 0Z" fill="url(#gB)"/></g>
     </svg>
     <svg class="silk silk-2" viewBox="0 0 1440 900" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
-      <g class="float f2"><path d="M1440 110C1262 196 1170 306 1226 434C1292 590 1114 704 1160 900H1440Z" fill="url(#gRed)" opacity=".94"/></g>
-      <g class="float f3"><path d="M1004 0C914 244 1124 334 1008 476C1156 330 1056 208 1136 0Z" fill="#fff" opacity=".3"/></g>
-    </svg>
-    <svg class="silk silk-3" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-      <g class="float f3" fill="none" stroke="#fff" stroke-linecap="round">
-        <path d="M700 900C880 690 1080 770 1190 560S1310 220 1440 150" stroke-width="34" opacity=".28"/>
-        <path d="M640 900C830 700 1010 790 1110 600S1250 290 1440 210" stroke-width="10" opacity=".4"/>
-      </g>
-      <g class="float f1"><path d="M0 900C180 760 380 830 560 700C700 600 640 500 780 430V900Z" fill="#5C0A1F" opacity=".07"/></g>
-      <rect class="sweep" x="-400" y="0" width="360" height="900" fill="url(#gSheen)" opacity=".45" transform="skewX(-18)"/>
+      <g class="float f3"><path d="M1440 0V900H1150C1250 800 1150 690 1225 550C1295 420 1205 260 1265 0Z" fill="url(#gC)"/></g>
+      <ellipse cx="1080" cy="170" rx="250" ry="190" fill="url(#gHi)"/>
     </svg>
 
     <div class="hero-copy" data-hero-copy>
@@ -156,46 +161,66 @@
   </div>
 </section>
 
-<div class="wave wave-down" aria-hidden="true">
-  <svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path d="M0 0H1440V40C1180 120 980 10 720 60C470 108 250 100 0 30Z" fill="#5C0A1F"/><path d="M0 30C250 100 470 108 720 60C980 10 1180 120 1440 40V120H0Z" fill="#FFFFFF"/></svg>
+<div class="wave wave-down" style="--from:linear-gradient(90deg,#4A060B,#6E0A12 60%,#5A080D);--c3:#fff" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
 </div>
 
 <!-- ABOUT -->
-<section class="about tone" id="about" aria-labelledby="aboutTitle">
+<section class="about tone" id="about" aria-labelledby="aboutTitle" data-scrub>
+  <svg class="sect-silk" viewBox="0 0 400 900" preserveAspectRatio="none" aria-hidden="true" focusable="false" data-mouse-var="14">
+    <path d="M330 0C270 200 400 340 320 480C240 640 360 780 290 900H220C290 780 170 640 250 480C330 340 210 200 270 0Z" fill="url(#gG1)" opacity=".85"/>
+    <path d="M400 0V900H340C395 790 330 660 372 520C412 385 340 230 380 0Z" fill="url(#gA)"/>
+  </svg>
   <div class="about-grid">
-    <figure class="about-fig reveal-img">
+    <figure class="about-fig reveal-img" data-parallax="-0.045" data-mouse="12">
       <img src="assets/img/p/chopard-pink-heart-set-2-lg.webp" alt="Pink heart pendant necklace, bracelet and earrings in a presentation box" width="1400" height="1400" loading="lazy">
     </figure>
     <div class="about-copy">
       <h2 id="aboutTitle" class="display reveal-lines"><span class="line"><span>The Essence</span></span><span class="line"><span><em>of</em> Elora</span></span></h2>
-      <p class="lede reveal-fade">ELORA ELEGANCE COLLECTIVE brings together fashion and accessories chosen for the way they look and the way they feel to wear.</p>
-      <p class="reveal-fade">Bags, jewelry, watches, wallets, belts and footwear are presented with care and photographed as they are, so you can see each piece clearly before you ask about it.</p>
-      <ul class="values reveal-fade">
-        <li><strong>Elegance</strong><span>Refined pieces with a quiet confidence.</span></li>
-        <li><strong>Curated style</strong><span>A selection edited for the modern wardrobe.</span></li>
-        <li><strong>Timeless design</strong><span>Shapes and details that outlast a season.</span></li>
-        <li><strong>Attention to detail</strong><span>Every piece shown close up, in full view.</span></li>
+      <p class="lede" data-rise>ELORA ELEGANCE COLLECTIVE brings together fashion and accessories chosen for the way they look and the way they feel to wear.</p>
+      <p data-rise data-st="1">Bags, jewelry, watches, wallets, belts and footwear are presented with care and photographed as they are, so you can see each piece clearly before you ask about it.</p>
+      <ul class="values">
+        <li data-rise data-st="3"><strong>Elegance</strong><span>Refined pieces with a quiet confidence.</span></li>
+        <li data-rise data-st="4"><strong>Curated style</strong><span>A selection edited for the modern wardrobe.</span></li>
+        <li data-rise data-st="5"><strong>Timeless design</strong><span>Shapes and details that outlast a season.</span></li>
+        <li data-rise data-st="6"><strong>Attention to detail</strong><span>Every piece shown close up, in full view.</span></li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- EDITORIAL BAND 1 -->
-<section class="band band-1" data-scrub aria-label="Editorial statement">
-  <div class="band-bg"><img src="assets/img/p/dior-pearl-cd-set-1-lg.webp" alt="" width="1400" height="1400" loading="lazy"></div>
-  <div class="band-veil"></div>
-  <p class="band-text">
-    <span style="--i:0">WHERE STYLE</span>
-    <span style="--i:1">BECOMES</span>
-    <span style="--i:2">STATEMENT.</span>
-  </p>
+<div class="wave" style="--from:#fff;--c1:#E9E9EC;--c2:#9A1018;--c3:#230004" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
+<!-- EDITORIAL BAND 1 (pinned: text changes while the image slowly pushes in) -->
+<section class="band band-1 pin" data-pin aria-label="Editorial statement">
+  <div class="pin-stage">
+    <div class="band-bg"><img src="assets/img/p/dior-pearl-cd-set-1-lg.webp" alt="" width="1400" height="1400" loading="lazy"></div>
+    <div class="band-veil"></div>
+    <svg class="band-silk" viewBox="0 0 1440 900" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+      <path d="M1440 0V900H1000C1100 780 960 650 1040 500C1120 360 1000 210 1080 0Z" fill="url(#gA)" opacity=".85"/>
+      <path d="M1440 0V900H1170C1260 800 1170 690 1240 550C1305 420 1225 260 1285 0Z" fill="url(#gC)"/>
+    </svg>
+    <p class="band-text">
+      <span style="--i:0">WHERE STYLE</span>
+      <span style="--i:1">BECOMES</span>
+      <span style="--i:2">STATEMENT.</span>
+    </p>
+  </div>
 </section>
 
+<div class="wave" style="--from:#230004;--c1:#7E0D11;--c3:#fff" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
 <!-- COLLECTION -->
-<section class="collection tone" id="collection" aria-labelledby="collTitle">
+<section class="collection tone" id="collection" aria-labelledby="collTitle" data-scrub>
+  <svg class="sect-silk mirror" viewBox="0 0 400 900" preserveAspectRatio="none" aria-hidden="true" focusable="false" data-mouse-var="10">
+    <path d="M330 0C270 200 400 340 320 480C240 640 360 780 290 900H220C290 780 170 640 250 480C330 340 210 200 270 0Z" fill="url(#gG1)" opacity=".85"/>
+    <path d="M400 0V900H340C395 790 330 660 372 520C412 385 340 230 380 0Z" fill="url(#gA)"/>
+  </svg>
   <header class="section-head">
     <h2 id="collTitle" class="display reveal-lines"><span class="line"><span>The Collection</span></span></h2>
-    <p class="sub reveal-fade">Curated pieces designed to elevate every moment.</p>
+    <p class="sub" data-rise data-st="1">Curated pieces designed to elevate every moment.</p>
   </header>
 
   <div class="toolbar">
@@ -213,69 +238,138 @@
   <noscript><p class="empty">Please enable JavaScript to browse the collection, or visit us on Instagram <a href="https://www.instagram.com/eloraluxecollection/">@eloraluxecollection</a>.</p></noscript>
 </section>
 
-<!-- EDITORIAL BAND 2 (horizontal movement) -->
-<section class="band band-2" data-scrub aria-label="Editorial statement">
-  <div class="marquee" aria-hidden="true"><span>ELORA ELEGANCE COLLECTIVE</span><span>ELORA ELEGANCE COLLECTIVE</span></div>
-  <p class="band-text">
-    <span style="--i:0">CURATED FOR</span>
-    <span style="--i:1">THE MODERN</span>
-    <span style="--i:2">COLLECTOR.</span>
-  </p>
+<div class="wave" style="--from:#fff;--c1:#E9E9EC;--c2:#9A1018;--c3:#6E0A12" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
+<!-- EDITORIAL BAND 2 (pinned: horizontal movement) -->
+<section class="band band-2 pin" data-pin aria-label="Editorial statement">
+  <div class="pin-stage">
+    <div class="marquee" aria-hidden="true"><span>ELORA ELEGANCE COLLECTIVE</span><span>ELORA ELEGANCE COLLECTIVE</span></div>
+    <svg class="band-silk left" viewBox="0 0 1440 900" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" focusable="false">
+      <path d="M1440 0V900H1040C1140 790 1000 660 1080 510C1160 370 1040 220 1120 0Z" fill="url(#gB)" opacity=".8"/>
+    </svg>
+    <p class="band-text">
+      <span style="--i:0">CURATED FOR</span>
+      <span style="--i:1">THE MODERN</span>
+      <span style="--i:2">COLLECTOR.</span>
+    </p>
+  </div>
 </section>
 
+<div class="wave" style="--from:#230004;--c1:#8C1016;--c3:#F7F4F1" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
+
 <!-- NEW ARRIVALS -->
-<section class="arrivals" id="new-arrivals" aria-labelledby="newTitle">
+<section class="arrivals has-silk" id="new-arrivals" aria-labelledby="newTitle" data-scrub>
+  <svg class="sect-silk mirror" viewBox="0 0 400 900" preserveAspectRatio="none" aria-hidden="true" focusable="false" data-mouse-var="12">
+    <path d="M330 0C270 200 400 340 320 480C240 640 360 780 290 900H220C290 780 170 640 250 480C330 340 210 200 270 0Z" fill="url(#gG1)" opacity=".85"/>
+    <path d="M400 0V900H340C395 790 330 660 372 520C412 385 340 230 380 0Z" fill="url(#gA)"/>
+  </svg>
   <header class="section-head row">
     <div>
       <h2 id="newTitle" class="display reveal-lines"><span class="line"><span>New Arrivals</span></span></h2>
-      <p class="sub reveal-fade">The latest pieces to join the collection.</p>
+      <p class="sub" data-rise data-st="1">The latest pieces to join the collection.</p>
     </div>
-    <div class="rail-btns">
+    <div class="rail-btns" data-rise data-st="2">
       <button type="button" class="round-btn" id="railPrev" aria-label="Previous pieces"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m14 6-6 6 6 6"/></svg></button>
       <button type="button" class="round-btn" id="railNext" aria-label="Next pieces"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m10 6 6 6-6 6"/></svg></button>
     </div>
   </header>
-  <div class="rail" id="rail" tabindex="0" aria-label="New arrivals, scroll horizontally"></div>
+  <div class="rail" id="rail" data-rise data-st="2" tabindex="0" aria-label="New arrivals, scroll horizontally"></div>
 </section>
 
 <!-- CONTACT / HOW TO ORDER -->
-<section class="contact" id="contact" aria-labelledby="contactTitle">
+<div class="wave" style="--from:#F7F4F1;--c1:#EFEDEB;--c2:#F8F6F4;--c3:#fff" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
+<section class="contact has-silk" id="contact" aria-labelledby="contactTitle" data-scrub>
+  <svg class="sect-silk" viewBox="0 0 400 900" preserveAspectRatio="none" aria-hidden="true" focusable="false" data-mouse-var="12">
+    <path d="M330 0C270 200 400 340 320 480C240 640 360 780 290 900H220C290 780 170 640 250 480C330 340 210 200 270 0Z" fill="url(#gG1)" opacity=".85"/>
+    <path d="M400 0V900H340C395 790 330 660 372 520C412 385 340 230 380 0Z" fill="url(#gA)"/>
+  </svg>
   <div class="contact-grid">
     <div>
       <h2 id="contactTitle" class="display reveal-lines"><span class="line"><span>Order on</span></span><span class="line"><span>Instagram</span></span></h2>
-      <p class="lede reveal-fade">Instagram is where we take orders and answer questions. Send us a message with the piece you like.</p>
-      <a class="btn btn-primary btn-lg" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">ORDER ON INSTAGRAM</a>
-      <a class="handle" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">@eloraluxecollection</a>
+      <p class="lede" data-rise>Instagram is where we take orders and answer questions. Send us a message with the piece you like.</p>
+      <div class="cta-row" data-rise data-st="2">
+        <a class="btn btn-primary btn-lg" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">ORDER ON INSTAGRAM</a>
+        <a class="handle" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">@eloraluxecollection</a>
+      </div>
     </div>
     <ol class="steps">
-      <li><h3>Choose a piece</h3><p>Browse the collection and open any piece to see every photo.</p></li>
-      <li><h3>Message us</h3><p>Tap Order on Instagram and send the name of the piece you want.</p></li>
-      <li><h3>Confirm the details</h3><p>Ask for the price, current availability and anything else in the conversation.</p></li>
+      <li data-rise data-st="1"><h3>Choose a piece</h3><p>Browse the collection and open any piece to see every photo.</p></li>
+      <li data-rise data-st="3"><h3>Message us</h3><p>Tap Order on Instagram and send the name of the piece you want.</p></li>
+      <li data-rise data-st="5"><h3>Confirm the details</h3><p>Ask for the price, current availability and anything else in the conversation.</p></li>
     </ol>
+  </div>
+</section>
+
+<!-- DUBAI LOCATION -->
+<div class="wave" style="--from:#fff;--c1:#EFEDEB;--c2:#F4F2F0;--c3:#F7F4F1" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
+<section class="location tone" id="location" aria-labelledby="locTitle" data-scrub>
+  <svg class="sect-silk mirror" viewBox="0 0 400 900" preserveAspectRatio="none" aria-hidden="true" focusable="false" data-mouse-var="14">
+    <path d="M330 0C270 200 400 340 320 480C240 640 360 780 290 900H220C290 780 170 640 250 480C330 340 210 200 270 0Z" fill="url(#gG1)" opacity=".85"/>
+    <path d="M400 0V900H340C395 790 330 660 372 520C412 385 340 230 380 0Z" fill="url(#gA)"/>
+  </svg>
+  <div class="loc-grid">
+    <div class="loc-copy">
+      <h2 id="locTitle" class="display caps reveal-lines"><span class="line"><span>Visit us</span></span><span class="line"><span>in Dubai</span></span></h2>
+      <p class="loc-place" data-rise data-st="1">Dubai, United Arab Emirates</p>
+      <p class="loc-note" data-rise data-st="2">For visit details and availability, message us on Instagram.</p>
+      <div class="loc-btns" data-rise data-st="3">
+        <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&amp;query=Dubai%2C%20United%20Arab%20Emirates" target="_blank" rel="noopener">OPEN IN GOOGLE MAPS</a>
+        <a class="btn btn-secondary" href="https://www.google.com/maps/dir/?api=1&amp;destination=Dubai%2C%20United%20Arab%20Emirates" target="_blank" rel="noopener">GET DIRECTIONS</a>
+      </div>
+      <div class="loc-ig" data-rise data-st="5">
+        <a class="handle" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">@eloraluxecollection</a>
+        <a class="btn btn-secondary btn-sm" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">CONTACT US ON INSTAGRAM</a>
+      </div>
+    </div>
+    <div class="map-stage" data-map-stage>
+      <div class="map-card" data-map-card>
+        <div class="map-fallback" aria-hidden="true">
+          <svg viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice"><path d="M0 330C120 260 220 360 340 300C450 245 520 280 600 230V450H0Z" fill="url(#gA)" opacity=".9"/><path d="M0 380C140 320 260 410 380 350C470 305 540 340 600 310V450H0Z" fill="url(#gC)"/></svg>
+          <span>Dubai, United Arab Emirates</span>
+        </div>
+        <iframe class="map-frame" title="Map of Dubai, United Arab Emirates" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen
+          src="https://www.google.com/maps?q=Dubai%2C+United+Arab+Emirates&amp;z=10&amp;output=embed"></iframe>
+        <div class="map-tint" aria-hidden="true"></div>
+        <button class="map-shield" type="button" aria-label="Activate the map to pan and zoom">Click to explore the map</button>
+        <button class="map-done" type="button" hidden>Done</button>
+      </div>
+    </div>
   </div>
 </section>
 
 </main>
 
+<div class="wave " style="--from:#F7F4F1;--c1:#E9E9EC;--c2:#9A1018;--c3:#6E0A12" aria-hidden="true">
+  <svg viewBox="0 0 1440 140" preserveAspectRatio="none"><path class="w1" d="M0 20C260 110 470 118 740 66C1000 16 1200 118 1440 34V140H0Z"/><path class="w2" d="M0 58C250 122 480 126 730 88C990 50 1200 130 1440 70V140H0Z"/><path class="w3" d="M0 96C260 138 500 140 740 116C990 92 1210 140 1440 104V140H0Z"/></svg>
+</div>
+
 <!-- FOOTER -->
-<footer class="footer">
+<footer class="footer" data-scrub>
   <div class="footer-silk" aria-hidden="true">
-    <svg viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax slice"><path d="M0 400V210C200 120 380 260 620 200C860 140 1050 40 1440 120V400Z" fill="#6E0B1C" opacity=".55"/><path d="M0 400V290C260 200 440 330 700 270C960 210 1140 150 1440 230V400Z" fill="#8E1128" opacity=".35"/></svg>
+    <svg viewBox="0 0 1440 500" preserveAspectRatio="xMidYMax slice"><path d="M1440 0V500H820C930 420 800 330 900 230C990 140 900 60 960 0Z" fill="url(#gA)" opacity=".75"/><path d="M1440 90V500H1010C1110 420 1010 340 1090 250C1160 170 1100 120 1150 90Z" fill="url(#gB)" opacity=".8"/><path d="M0 500V330C220 250 420 380 660 320C760 295 800 340 860 500Z" fill="#4A060B" opacity=".55"/><path d="M0 500V420C260 350 470 450 720 400C790 386 830 430 880 500Z" fill="#230004" opacity=".5"/></svg>
   </div>
   <div class="footer-inner">
-    <p class="footer-brand"><span>ELORA</span> ELEGANCE COLLECTIVE</p>
-    <nav class="footer-links" aria-label="Footer">
+    <p class="footer-brand reveal-lines"><span class="line"><span><b>ELORA</b></span></span><span class="line"><span>ELEGANCE COLLECTIVE</span></span></p>
+    <nav class="footer-links" aria-label="Footer" data-rise data-st="1">
       <a href="#home">Home</a>
       <a href="#collection">Collection</a>
       <a href="#about">About</a>
       <a href="#new-arrivals">New Arrivals</a>
       <a href="#contact">Contact</a>
     </nav>
-    <div class="footer-ig">
+    <div class="footer-ig" data-rise data-st="2">
       <a class="handle light" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">@eloraluxecollection</a>
       <a class="btn btn-light" href="https://www.instagram.com/eloraluxecollection/" target="_blank" rel="noopener">FOLLOW US ON INSTAGRAM</a>
     </div>
-    <p class="fine">Third-party brand names and logos appear only as they do on the products pictured and belong to their respective owners. ELORA ELEGANCE COLLECTIVE is an independent storefront and is not affiliated with those brands.</p>
+    <p class="fine" data-rise data-st="3">Dubai, United Arab Emirates</p>
+    <p class="fine" data-rise data-st="3">Third-party brand names and logos appear only as they do on the products pictured and belong to their respective owners. ELORA ELEGANCE COLLECTIVE is an independent storefront and is not affiliated with those brands.</p>
     <p class="fine">© 2026 ELORA ELEGANCE COLLECTIVE. All rights reserved.</p>
   </div>
 </footer>
